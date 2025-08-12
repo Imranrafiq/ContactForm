@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اندراج فارم</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f3f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkgreen;
+        }
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<form id="dataForm">
+    <h2 style="text-align:center;">اندراج فارم</h2>
+    <input type="text" name="name" placeholder="نام" required>
+    <input type="text" name="phone" placeholder="موبائل نمبر" required>
+    <input type="text" name="position" placeholder="عہدہ" required>
+    <textarea name="address" placeholder="پتہ" required></textarea>
+    <button type="submit">محفوظ کریں</button>
+    <div class="message" id="msg"></div>
+</form>
+
+<script>
+    document.getElementById("dataForm").addEventListener("submit", function(e){
+        e.preventDefault();
+        
+        let formData = new FormData(this);
+        let msg = document.getElementById("msg");
+
+        fetch("https://script.google.com/macros/s/AKfycbyrnUDlCSXOUqY46siJPN7c4LHPRRmqcvPE8SCPbiGCKX4GedELVMYu456MDFERmzgM/exec", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.text())
+        .then(data => {
+            if(data.includes("duplicate")) {
+                msg.style.color = "red";
+                msg.innerText = "یہ ریکارڈ پہلے سے موجود ہے!";
+            } else {
+                msg.style.color = "green";
+                msg.innerText = "ڈیٹا کامیابی سے محفوظ ہو گیا!";
+                document.getElementById("dataForm").reset();
+            }
+        })
+        .catch(err => {
+            msg.style.color = "red";
+            msg.innerText = "کچھ غلط ہو گیا!";
+        });
+    });
+</script>
+
+</body>
+</html>
